@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investify - Smart Investment Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/invest.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="logo">Investify</div>
+        <nav>
+            <a href="#dashboardSection" class="active"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="#investmentCategoriesSection"><i class="fas fa-lightbulb"></i> Invest</a>
+            <a href="#portfolioSection"><i class="fas fa-chart-pie"></i> Portfolio</a>
+            <a href="#calculatorSection"><i class="fas fa-calculator"></i> Calculator</a>
+        </nav>
+        <div class="user-info" id="userInfo" style="display: none;">
+            <span id="userName"></span>
+            <span id="userBalance"></span>
+            <button class="btn btn-secondary" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section (Login) -->
+    <section class="hero" id="loginSection">
+        <div class="hero-background">
+            <div class="floating-icons">
+                <i class="fas fa-chart-line"></i>
+                <i class="fas fa-coins"></i>
+                <i class="fas fa-building"></i>
+                <i class="fas fa-car"></i>
+                <i class="fas fa-briefcase"></i>
+                <i class="fas fa-bitcoin"></i>
+            </div>
+        </div>
+        <div class="hero-content glass-card login-card">
+            <div class="card-header">
+                <h2>Welcome to <span class="highlight">Investify</span></h2>
+                <p>Your smart partner for secure investments.</p>
+            </div>
+            <form class="form" id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="loginAccount" placeholder="Account Number" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login <i class="fas fa-sign-in-alt"></i></button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <main class="main-content" id="dashboardSection" style="display: none;">
+        <section class="section portfolio-overview" id="portfolioSection">
+            <div class="container">
+                <h2>Your <span class="highlight">Portfolio</span> Overview</h2>
+                <div class="portfolio-cards" id="portfolioSummary">
+                    <!-- Portfolio summary cards will be loaded here by JS -->
+                    <div class="portfolio-card glass-card">
+                        <div class="card-icon"><i class="fas fa-wallet"></i></div>
+                        <div class="card-content">
+                            <h3>Total Invested</h3>
+                            <p id="totalInvested">₹0</p>
+                        </div>
+                    </div>
+                    <div class="portfolio-card glass-card">
+                        <div class="card-icon"><i class="fas fa-money-bill-wave"></i></div>
+                        <div class="card-content">
+                            <h3>Current Value</h3>
+                            <p id="currentValue">₹0</p>
+                        </div>
+                    </div>
+                    <div class="portfolio-card glass-card">
+                        <div class="card-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                        <div class="card-content">
+                            <h3>Total Returns</h3>
+                            <p id="totalReturns">₹0</p>
+                        </div>
+                    </div>
+                    <div class="portfolio-card glass-card">
+                        <div class="card-icon"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="card-content">
+                            <h3>Last Update</h3>
+                            <p id="lastUpdate">N/A</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-details glass-card">
+                    <h3>Your Investments</h3>
+                    <div class="investment-list" id="portfolioInvestments">
+                        <p class="no-investments">Loading your investments...</p>
+                        <!-- Individual investment items will be loaded here by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section investment-categories" id="investmentCategoriesSection">
+            <div class="container">
+                <h2>Explore <span class="highlight">Investment</span> Categories</h2>
+                <div class="category-grid" id="categoryGrid">
+                    <!-- Investment categories will be loaded here by JS -->
+                    <p class="no-investments">Loading investment categories...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Investment Calculator Modal -->
+    <div class="investment-calculator glass-card" id="calculatorSection" style="display: none;">
+        <div class="card-header">
+            <button class="close-btn" onclick="closeCalculator()"><i class="fas fa-times"></i></button>
+            <h3><i class="fas fa-calculator"></i> Investment Calculator</h3>
+            <p>Calculate potential returns for your chosen investment.</p>
+        </div>
+        <div class="calculator-content">
+            <div class="investment-form">
+                <div class="input-group">
+                    <i class="fas fa-rupee-sign"></i>
+                    <input type="number" id="investmentAmount" placeholder="Investment Amount" required min="0">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-clock"></i>
+                    <select id="investmentDuration" required>
+                        <option value="1">1 Year</option>
+                        <option value="2">2 Years</option>
+                        <option value="3">3 Years</option>
+                        <option value="5" selected>5 Years</option>
+                        <option value="10">10 Years</option>
+                        <option value="15">15 Years</option>
+                        <option value="20">20 Years</option>
+                    </select>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="calculateReturns()">Calculate Returns <i class="fas fa-calculator"></i></button>
+                    <button class="btn btn-secondary" onclick="makeInvestment()">Invest Now <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            <div class="calculation-results" id="calculationResults" style="display: none;">
+                <h4>Projected Returns</h4>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <span>Invested Amount:</span>
+                        <span id="resultInvested">₹0</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Total Returns:</span>
+                        <span id="resultReturns" class="positive">₹0</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Future Value:</span>
+                        <span id="resultFutureValue">₹0</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Annual ROI:</span>
+                        <span id="resultROI">0%</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Maturity Date:</span>
+                        <span id="resultMaturityDate">N/A</span>
+                    </div>
+                </div>
+                <canvas id="investmentChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Investment Successful!</h3>
+                <span class="close" onclick="closeSuccessModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Your investment has been successfully placed.</p>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <span>Transaction ID:</span>
+                        <span id="modalTransactionId"></span>
+                    </div>
+                    <div class="result-item">
+                        <span>Investment Type:</span>
+                        <span id="modalInvestmentType"></span>
+                    </div>
+                    <div class="result-item">
+                        <span>Amount Invested:</span>
+                        <span id="modalAmountInvested"></span>
+                    </div>
+                    <div class="result-item">
+                        <span>Expected Returns:</span>
+                        <span id="modalExpectedReturns"></span>
+                    </div>
+                    <div class="result-item">
+                        <span>Maturity Date:</span>
+                        <span id="modalMaturityDate"></span>
+                    </div>
+                    <div class="result-item">
+                        <span>New Account Balance:</span>
+                        <span id="modalNewBalance"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeSuccessModal()">Great!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner" style="display: none;">
+        <div class="spinner"></div>
+        <p>Processing...</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/invest.js') }}?v=3"></script>
+    <script>
+        // Logout function
+        function handleLogout() {
+            sessionStorage.removeItem('currentUser');
+            currentUser = null;
+            window.location.reload(); // Reload to show login section
+        }
+
+        // Smooth scroll for navbar links
+        document.querySelectorAll('.navbar nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                document.querySelectorAll('.navbar nav a').forEach(link => link.classList.remove('active'));
+                this.classList.add('active');
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+
+    <!-- Footer -->
+    <footer class="footer-card">
+        <p>© 2025 Maze Bank. All rights reserved.</p>
+    </footer>
+</body>
+</html>

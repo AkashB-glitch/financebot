@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Login</title>
+</head>
+<body>
+    <h1>Test Login Form</h1>
+    <form id="loginForm">
+        <div>
+            <label for="loginAccount">Account Number:</label>
+            <input type="text" id="loginAccount" value="55986898" required>
+        </div>
+        <div>
+            <label for="loginPassword">Password:</label>
+            <input type="password" id="loginPassword" value="1651" required>
+        </div>
+        <button type="submit">Login</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        console.log('Test script loaded');
+        
+        const loginForm = document.getElementById('loginForm');
+        
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            console.log('Form submitted');
+            
+            const accountNumber = document.getElementById('loginAccount').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            console.log('Account:', accountNumber, 'Password:', password);
+            
+            try {
+                const response = await fetch('/check_balance', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `account_number=${accountNumber}&password=${password}`
+                });
+                
+                const data = await response.json();
+                console.log('Response:', data);
+                
+                document.getElementById('result').innerHTML = `
+                    <h2>Login Result:</h2>
+                    <p>Status: ${data.status}</p>
+                    <p>Name: ${data.name || 'N/A'}</p>
+                    <p>Balance: ${data.balance || 'N/A'}</p>
+                    <p>Message: ${data.message || 'N/A'}</p>
+                `;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

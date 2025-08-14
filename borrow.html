@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borrow - Maze Bank</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .navbar nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .navbar nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .loan-form-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loan-details {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .loan-details.show {
+            display: block;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .detail-value {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-size: 1.1rem;
+            padding: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .container {
+                padding: 0 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="logo">Maze Bank</div>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('save_page') }}">Save</a>
+            <a href="{{ url_for('pay_page') }}">Pay</a>
+            <a href="{{ url_for('invest_page') }}">Invest</a>
+            <a href="{{ url_for('borrow_page') }}">Borrow</a>
+            <a href="{{ url_for('insure_page') }}">Insure</a>
+            <a href="{{ url_for('offers_page') }}">Offers</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-hand-holding-usd"></i> Loan Application</h1>
+            <p>Apply for a loan with competitive interest rates</p>
+        </div>
+
+        <!-- Loan Application Form -->
+        <div class="loan-form-container">
+            <form id="loanForm">
+                <div class="form-section">
+                    <h3><i class="fas fa-user"></i> Personal Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="accountNumber">Account Number *</label>
+                            <input type="text" id="accountNumber" name="accountNumber" required 
+                                   placeholder="Enter your account number">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password *</label>
+                            <input type="password" id="password" name="password" required 
+                                   placeholder="Enter your password">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ifscCode">IFSC Code *</label>
+                            <input type="text" id="ifscCode" name="ifscCode" required 
+                                   placeholder="Enter IFSC code">
+                        </div>
+                        <div class="form-group">
+                            <label for="aadharNumber">Aadhar Number *</label>
+                            <input type="text" id="aadharNumber" name="aadharNumber" required 
+                                   placeholder="Enter 12-digit Aadhar number" maxlength="12">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><i class="fas fa-money-bill-wave"></i> Loan Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="loanAmount">Loan Amount (₹) *</label>
+                            <input type="number" id="loanAmount" name="loanAmount" required 
+                                   min="10000" max="10000000" placeholder="Enter loan amount">
+                        </div>
+                        <div class="form-group">
+                            <label for="loanPurpose">Purpose of Loan *</label>
+                            <select id="loanPurpose" name="loanPurpose" required>
+                                <option value="">Select loan purpose</option>
+                                <option value="personal">Personal Loan</option>
+                                <option value="home">Home Loan</option>
+                                <option value="car">Car Loan</option>
+                                <option value="education">Education Loan</option>
+                                <option value="business">Business Loan</option>
+                                <option value="medical">Medical Emergency</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="loanDescription">Additional Details</label>
+                        <textarea id="loanDescription" name="loanDescription" rows="3" 
+                                  placeholder="Provide additional details about your loan requirement"></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> Apply for Loan
+                </button>
+            </form>
+        </div>
+
+        <!-- Loan Details Display -->
+        <div class="loan-details" id="loanDetails">
+            <h3><i class="fas fa-info-circle"></i> Loan Approval Details</h3>
+            <div id="loanDetailsContent"></div>
+            <button type="button" class="btn" id="acceptLoanBtn" style="margin-top: 1rem;">
+                <i class="fas fa-check"></i> Accept Loan & Deposit Money
+            </button>
+        </div>
+
+        <!-- Messages -->
+        <div id="messageContainer"></div>
+    </div>
+
+    <script>
+        document.getElementById('loanForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const messageContainer = document.getElementById('messageContainer');
+
+            // Disable submit button and show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+            // Clear previous messages
+            messageContainer.innerHTML = '';
+
+            // Get form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+
+            // Validate Aadhar number
+            if (data.aadharNumber.length !== 12 || !/^\d{12}$/.test(data.aadharNumber)) {
+                showMessage('Please enter a valid 12-digit Aadhar number', 'error');
+                resetSubmitButton();
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/apply_loan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    showLoanDetails(result.loan_details);
+                    showMessage('Loan application processed successfully!', 'success');
+                } else {
+                    showMessage(result.message || 'Error processing loan application', 'error');
+                }
+            } catch (error) {
+                showMessage('Network error. Please try again.', 'error');
+            }
+
+            resetSubmitButton();
+        });
+
+        document.getElementById('acceptLoanBtn').addEventListener('click', async function() {
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Deposit...';
+
+            try {
+                const response = await fetch('/api/accept_loan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        account_number: document.getElementById('accountNumber').value,
+                        password: document.getElementById('password').value
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    showMessage(`Loan amount ₹${result.amount} has been deposited to your account! New balance: ₹${result.new_balance}`, 'success');
+                    document.getElementById('loanDetails').style.display = 'none';
+                    document.getElementById('loanForm').reset();
+                } else {
+                    showMessage(result.message || 'Error processing loan deposit', 'error');
+                }
+            } catch (error) {
+                showMessage('Network error. Please try again.', 'error');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check"></i> Accept Loan & Deposit Money';
+        });
+
+        function showLoanDetails(details) {
+            const content = document.getElementById('loanDetailsContent');
+            content.innerHTML = `
+                <div class="detail-item">
+                    <span class="detail-label">Loan Amount:</span>
+                    <span class="detail-value">₹${details.amount.toLocaleString()}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Interest Rate:</span>
+                    <span class="detail-value">${details.interest_rate}% per annum</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Loan Duration:</span>
+                    <span class="detail-value">${details.duration} years</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Monthly EMI:</span>
+                    <span class="detail-value">₹${details.monthly_emi.toLocaleString()}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Total Amount Payable:</span>
+                    <span class="detail-value">₹${details.total_payable.toLocaleString()}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Processing Fee:</span>
+                    <span class="detail-value">₹${details.processing_fee.toLocaleString()}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Loan Purpose:</span>
+                    <span class="detail-value">${details.purpose}</span>
+                </div>
+            `;
+
+            document.getElementById('loanDetails').classList.add('show');
+        }
+
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('messageContainer');
+            const messageClass = type === 'success' ? 'success-message' : 'error-message';
+            messageContainer.innerHTML = `<div class="${messageClass}">${message}</div>`;
+        }
+
+        function resetSubmitButton() {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Apply for Loan';
+        }
+
+        // Format Aadhar number input
+        document.getElementById('aadharNumber').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
+        });
+
+        // Format account number input
+        document.getElementById('accountNumber').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
+        });
+    </script>
+</body>
+</html>

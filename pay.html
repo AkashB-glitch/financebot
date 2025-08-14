@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pay - The Maze Bank Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 15px 40px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+
+        .navbar nav a {
+            color: white;
+            margin-left: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .navbar nav a:hover {
+            color: #ffcc00;
+        }
+
+        .navbar nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #ffcc00;
+            transition: width 0.3s;
+        }
+
+        .navbar nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Main Container */
+        .main-container {
+            margin-top: 80px;
+            padding: 40px 20px;
+            min-height: calc(100vh - 80px);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        /* Card Styles */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+            width: 400px;
+            max-width: 90%;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .card-header h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #ffcc00;
+        }
+
+        .card-header p {
+            opacity: 0.8;
+            font-size: 14px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #ffcc00;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
+        }
+
+        /* Button Styles */
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ffcc00, #ff9500);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 204, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ff4757, #ff3742);
+            color: white;
+        }
+
+        /* Account Info Display */
+        .account-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffcc00;
+        }
+
+        .balance-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffcc00;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        /* Status Messages */
+        .status-message {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: rgba(39, 174, 96, 0.2);
+            border: 1px solid #27ae60;
+            color: #2ecc71;
+        }
+
+        .status-error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+        }
+
+        /* Recipient Info */
+        .recipient-info {
+            background: rgba(52, 152, 219, 0.2);
+            border: 1px solid #3498db;
+            color: #74b9ff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        /* Transaction Receipt */
+        .receipt {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px dashed rgba(255, 204, 0, 0.3);
+        }
+
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .receipt-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 204, 0, 0.3);
+            border-top: 4px solid #ffcc00;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .quick-action {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .quick-action:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .quick-action i {
+            font-size: 24px;
+            color: #ffcc00;
+            margin-bottom: 10px;
+        }
+
+        .quick-action span {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .card {
+                width: 100%;
+                max-width: 400px;
+            }
+            
+            .navbar {
+                padding: 15px 20px;
+            }
+            
+            .navbar nav a {
+                margin-left: 15px;
+                font-size: 14px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="logo">Maze Bank</div>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('save_page') }}">Save</a>
+            <a href="{{ url_for('pay_page') }}">Pay</a>
+            <a href="{{ url_for('invest_page') }}">Invest</a>
+            <a href="{{ url_for('borrow_page') }}">Borrow</a>
+            <a href="{{ url_for('insure_page') }}">Insure</a>
+            <a href="{{ url_for('offers_page') }}">Offers</a>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        <!-- Account Login Card -->
+        <div class="card" id="loginCard">
+            <div class="card-header">
+                <h2><i class="fas fa-user-lock"></i> Account Access</h2>
+                <p>Login to access payment features</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="accountNumber">Account Number</label>
+                    <input type="text" id="accountNumber" name="accountNumber" placeholder="Enter your account number" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+            
+            <div id="loginStatus"></div>
+        </div>
+
+        <!-- Payment Dashboard -->
+        <div class="card hidden" id="paymentDashboard">
+            <div class="card-header">
+                <h2><i class="fas fa-credit-card"></i> Payment Center</h2>
+                <p>Transfer money securely and instantly</p>
+            </div>
+
+            <!-- Account Info -->
+            <div class="account-info" id="accountInfo">
+                <div style="text-align: center;">
+                    <h4 id="accountHolderName">Account Holder</h4>
+                    <div class="balance-display" id="currentBalance">₹0.00</div>
+                    <small>Available Balance</small>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="quick-action" onclick="showCheckBalance()">
+                    <i class="fas fa-wallet"></i>
+                    <span>Check Balance</span>
+                </div>
+                <div class="quick-action" onclick="showTransferMoney()">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Send Money</span>
+                </div>
+                <div class="quick-action" onclick="showQuickPay()">
+                    <i class="fas fa-bolt"></i>
+                    <span>Quick Pay</span>
+                </div>
+                <div class="quick-action" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </div>
+            </div>
+
+            <!-- Transfer Money Form -->
+            <div id="transferSection" class="hidden">
+                <form id="transferForm">
+                    <div class="form-group">
+                        <label for="recipientAccount">Recipient Account Number</label>
+                        <input type="text" id="recipientAccount" name="recipientAccount" placeholder="Enter recipient's account number" required>
+                        <button type="button" class="btn btn-secondary" onclick="verifyAccount()" style="margin-top: 10px;">
+                            <i class="fas fa-search"></i> Verify Account
+                        </button>
+                    </div>
+                    
+                    <div id="recipientInfo" class="recipient-info hidden">
+                        <i class="fas fa-user"></i> <span id="recipientName"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transferAmount">Amount (₹)</label>
+                        <input type="number" id="transferAmount" name="transferAmount" placeholder="0.00" step="0.01" min="1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transactionNote">Transaction Note (Optional)</label>
+                        <textarea id="transactionNote" name="transactionNote" placeholder="Add a note for this transaction" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Transfer Money
+                    </button>
+                </form>
+            </div>
+
+            <!-- Quick Pay Amounts -->
+            <div id="quickPaySection" class="hidden">
+                <h4 style="margin-bottom: 20px;">Quick Pay Amounts</h4>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
+                    <button class="btn btn-secondary" onclick="setQuickAmount(100)">₹100</button>
+                    <button class="btn btn-secondary" onclick="setQuickAmount(500)">₹500</button>
+                    <button class="btn btn-secondary" onclick="setQuickAmount(1000)">₹1000</button>
+                    <button class="btn btn-secondary" onclick="setQuickAmount(2000)">₹2000</button>
+                    <button class="btn btn-secondary" onclick="setQuickAmount(5000)">₹5000</button>
+                    <button class="btn btn-secondary" onclick="setQuickAmount(10000)">₹10000</button>
+                </div>
+                <button class="btn btn-secondary" onclick="showTransferMoney()">Enter Custom Amount</button>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p>Processing your request...</p>
+            </div>
+
+            <!-- Status Messages -->
+            <div id="paymentStatus"></div>
+
+            <!-- Transaction Receipt -->
+            <div id="transactionReceipt" class="receipt hidden">
+                <div class="receipt-header">
+                    <h3><i class="fas fa-check-circle" style="color: #27ae60;"></i> Transaction Successful</h3>
+                    <p>Your money has been transferred successfully</p>
+                </div>
+                
+                <div class="receipt-row">
+                    <span>Transaction ID:</span>
+                    <span id="receiptTxnId">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span>From:</span>
+                    <span id="receiptFrom">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span>To:</span>
+                    <span id="receiptTo">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Amount:</span>
+                    <span id="receiptAmount">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Remaining Balance:</span>
+                    <span id="receiptBalance">-</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Date & Time:</span>
+                    <span id="receiptDateTime">-</span>
+                </div>
+                
+                <button class="btn btn-primary" onclick="startNewTransaction()" style="margin-top: 20px;">
+                    <i class="fas fa-plus"></i> New Transaction
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+
+        // Login Form Handler
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const accountNumber = document.getElementById('accountNumber').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            if (!accountNumber || !password) {
+                showStatus('loginStatus', 'Please enter both account number and password', 'error');
+                return;
+            }
+            
+            showLoading(true);
+            clearStatus('loginStatus');
+            
+            try {
+                const formData = new FormData();
+                formData.append('account_number', accountNumber);
+                formData.append('password', password);
+                
+                console.log('Sending login request...');
+                
+                const response = await fetch('/check_balance', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                showLoading(false);
+                
+                if (data.status === 'success') {
+                    currentUser = {
+                        account_number: accountNumber,
+                        password: password,
+                        name: data.name,
+                        balance: data.balance
+                    };
+                    
+                    console.log('Login successful:', currentUser);
+                    showDashboard();
+                    updateAccountInfo();
+                    showStatus('paymentStatus', 'Welcome back, ' + data.name + '!', 'success');
+                } else {
+                    showStatus('loginStatus', data.message || 'Login failed', 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showLoading(false);
+                showStatus('loginStatus', 'Connection error. Please check if the server is running and try again.', 'error');
+            }
+        });
+
+        // Transfer Form Handler
+        document.getElementById('transferForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const recipientAccount = document.getElementById('recipientAccount').value.trim();
+            const amount = parseFloat(document.getElementById('transferAmount').value);
+            const note = document.getElementById('transactionNote').value.trim();
+            
+            if (!currentUser) {
+                showStatus('paymentStatus', 'Please login first', 'error');
+                return;
+            }
+            
+            if (!recipientAccount || !amount || amount <= 0) {
+                showStatus('paymentStatus', 'Please fill all required fields with valid values', 'error');
+                return;
+            }
+            
+            if (amount > currentUser.balance) {
+                showStatus('paymentStatus', `Insufficient balance. Available: ₹${currentUser.balance.toFixed(2)}`, 'error');
+                return;
+            }
+            
+            showLoading(true);
+            clearStatus('paymentStatus');
+            
+            try {
+                const formData = new FormData();
+                formData.append('sender_account', currentUser.account_number);
+                formData.append('sender_password', currentUser.password);
+                formData.append('recipient_account', recipientAccount);
+                formData.append('amount', amount);
+                formData.append('transaction_note', note);
+                
+                console.log('Sending transfer request...');
+                
+                const response = await fetch('/transfer_money', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Transfer response:', data);
+                
+                showLoading(false);
+                
+                if (data.status === 'success') {
+                    currentUser.balance = data.new_balance;
+                    updateAccountInfo();
+                    showTransactionReceipt(data);
+                    document.getElementById('transferForm').reset();
+                    document.getElementById('recipientInfo').classList.add('hidden');
+                    hideAllSections();
+                } else {
+                    showStatus('paymentStatus', data.message || 'Transfer failed', 'error');
+                }
+            } catch (error) {
+                console.error('Transfer error:', error);
+                showLoading(false);
+                showStatus('paymentStatus', 'Connection error. Please try again.', 'error');
+            }
+        });
+
+        // Verify Account Function
+        async function verifyAccount() {
+            const recipientAccount = document.getElementById('recipientAccount').value.trim();
+            
+            if (!recipientAccount) {
+                showStatus('paymentStatus', 'Please enter recipient account number', 'error');
+                return;
+            }
+            
+            showLoading(true);
+            clearStatus('paymentStatus');
+            
+            try {
+                const formData = new FormData();
+                formData.append('account_number', recipientAccount);
+                
+                const response = await fetch('/verify_account', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                showLoading(false);
+                
+                if (data.status === 'success') {
+                    document.getElementById('recipientName').textContent = data.account_holder;
+                    document.getElementById('recipientInfo').classList.remove('hidden');
+                    showStatus('paymentStatus', `Account verified: ${data.account_holder}`, 'success');
+                } else {
+                    document.getElementById('recipientInfo').classList.add('hidden');
+                    showStatus('paymentStatus', data.message || 'Account verification failed', 'error');
+                }
+            } catch (error) {
+                console.error('Verify account error:', error);
+                showLoading(false);
+                showStatus('paymentStatus', 'Connection error. Please try again.', 'error');
+            }
+        }
+
+        // UI Helper Functions
+        function showDashboard() {
+            document.getElementById('loginCard').classList.add('hidden');
+            document.getElementById('paymentDashboard').classList.remove('hidden');
+        }
+
+        function updateAccountInfo() {
+            if (currentUser) {
+                document.getElementById('accountHolderName').textContent = currentUser.name;
+                document.getElementById('currentBalance').textContent = `₹${currentUser.balance.toFixed(2)}`;
+            }
+        }
+
+        function showTransferMoney() {
+            hideAllSections();
+            document.getElementById('transferSection').classList.remove('hidden');
+        }
+
+        function showQuickPay() {
+            hideAllSections();
+            document.getElementById('quickPaySection').classList.remove('hidden');
+        }
+
+        function showCheckBalance() {
+            hideAllSections();
+            updateAccountInfo();
+            showStatus('paymentStatus', `Current Balance: ₹${currentUser.balance.toFixed(2)}`, 'success');
+        }
+
+        function setQuickAmount(amount) {
+            showTransferMoney();
+            document.getElementById('transferAmount').value = amount;
+        }
+
+        function hideAllSections() {
+            document.getElementById('transferSection').classList.add('hidden');
+            document.getElementById('quickPaySection').classList.add('hidden');
+            document.getElementById('transactionReceipt').classList.add('hidden');
+        }
+
+        function showLoading(show) {
+            const loading = document.getElementById('loadingIndicator');
+            if (show) {
+                loading.style.display = 'block';
+            } else {
+                loading.style.display = 'none';
+            }
+        }
+
+        function showStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+            
+            // Auto hide success messages after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    element.innerHTML = '';
+                }, 5000);
+            }
+        }
+
+        function clearStatus(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+
+        function showTransactionReceipt(data) {
+            document.getElementById('receiptTxnId').textContent = data.transaction_id;
+            document.getElementById('receiptFrom').textContent = data.sender_name;
+            document.getElementById('receiptTo').textContent = data.recipient_name;
+            document.getElementById('receiptAmount').textContent = `₹${data.amount.toFixed(2)}`;
+            document.getElementById('receiptBalance').textContent = `₹${data.new_balance.toFixed(2)}`;
+            document.getElementById('receiptDateTime').textContent = new Date().toLocaleString();
+            
+            document.getElementById('transactionReceipt').classList.remove('hidden');
+        }
+
+        function startNewTransaction() {
+            document.getElementById('transactionReceipt').classList.add('hidden');
+            showTransferMoney();
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginCard').classList.remove('hidden');
+            document.getElementById('paymentDashboard').classList.add('hidden');
+            document.getElementById('loginForm').reset();
+            clearStatus('loginStatus');
+            clearStatus('paymentStatus');
+            hideAllSections();
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Payment page loaded');
+            // Hide loading initially
+            showLoading(false);
+        });
+    </script>

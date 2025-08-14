@@ -1,0 +1,297 @@
+/* Background Animation */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    color: white;
+}
+
+/* Navbar */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 20px 40px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    transition: padding 0.3s ease;
+}
+
+.navbar.shrink {
+    padding: 10px 40px;
+}
+
+.navbar .logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.navbar nav a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.navbar nav a:hover {
+    color: yellow;
+}
+
+/* Hero Section */
+.hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.hero-video {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.hero-overlay {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    animation: fadeIn 1.2s ease;
+}
+
+.hero-title {
+    font-size: 50px;
+    animation: slideDown 1s ease;
+}
+
+.hero-title span {
+    color: yellow;
+}
+
+.hero-subtitle {
+    font-size: 20px;
+    opacity: 0;
+    animation: fadeInUp 1s ease 0.5s forwards;
+}
+
+
+
+.container.glass {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    border-radius: 12px;
+    padding: 30px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    margin-top: 20px;
+    animation: fadeInUp 0.6s ease;
+}
+
+input::placeholder {
+    color: white;
+    opacity: 0.8;
+}
+
+input, button {
+    width: 95%;
+    padding: 12px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 6px;
+}
+
+input {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+button {
+    background: green;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s;
+}
+
+button:hover {
+    background: darkgreen;
+    transform: scale(1.05);
+}
+
+.toggle-create {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.toggle-create button {
+    background: blue;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 6px;
+}
+
+.toggle-create button:hover {
+    background: darkblue;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+/* Navbar - solid background, fixed top */
+.navbar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #111; /* Solid dark color */
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    border-radius: 0; /* Remove rounded corners */
+}
+
+.navbar .logo {
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.navbar nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar nav a:hover {
+    color: #ffcc00;
+}
+/* Form container glass effect */
+.container.glass {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 40px;
+    border-radius: 15px;
+    max-width: 450px; /* wider */
+    width: 90%;
+    margin: auto;
+    color: white;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    backdrop-filter: blur(12px);
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Title styling */
+.container.glass h2 {
+    font-size: 28px; /* bigger */
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* Buttons */
+button {
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0a0a0a;
+    overflow-x: hidden;
+}
+
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: rgb(164, 178, 191); /* New background color */
+}
+
+/* Center container */
+.container.glass {
+    background: rgba(0, 0, 0, 0.85);
+    padding: 40px;
+    border-radius: 15px;
+    max-width: 450px; /* Wider form */
+    width: 90%;
+    margin: 100px auto;
+    color: white;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    backdrop-filter: blur(12px);
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Title styling */
+.container.glass h2 {
+    font-size: 28px; /* Bigger titles */
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* Input fields */
+.container.glass input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: none;
+    font-size: 16px;
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Login button */
+.login-btn {
+    background-color: green;
+    color: white;
+}
+
+/* Create account button */
+.create-btn {
+    background-color: blue;
+    color: white;
+    margin-top: 10px;
+}

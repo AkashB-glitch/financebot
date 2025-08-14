@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offers - Maze Bank</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .navbar nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .navbar nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .offers-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .category-card h3 {
+            font-size: 1.5rem;
+            color: #333;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .category-card p {
+            color: #666;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .offers-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .offers-section.active {
+            display: block;
+        }
+
+        .offers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .offer-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .offer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(102, 126, 234, 0.3);
+        }
+
+        .offer-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .offer-card:hover::before {
+            top: -30%;
+            right: -30%;
+        }
+
+        .offer-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .offer-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            color: #ffcc00;
+        }
+
+        .offer-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .offer-badge {
+            background: #ffcc00;
+            color: #333;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .offer-description {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        .offer-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .offer-features li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .offer-features li:before {
+            content: "✓";
+            color: #ffcc00;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .offer-cta {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 2;
+            width: 100%;
+        }
+
+        .offer-cta:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 2rem;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            margin-left: 1rem;
+        }
+
+        .section-icon {
+            font-size: 2.5rem;
+            color: #667eea;
+        }
+
+        .application-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .offers-categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .offers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .container {
+                padding: 0 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="logo">Maze Bank</div>
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('save_page') }}">Save</a>
+            <a href="{{ url_for('pay_page') }}">Pay</a>
+            <a href="{{ url_for('invest_page') }}">Invest</a>
+            <a href="{{ url_for('borrow_page') }}">Borrow</a>
+            <a href="{{ url_for('insure_page') }}">Insure</a>
+            <a href="{{ url_for('offers_page') }}">Offers</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-gift"></i> Exclusive Offers</h1>
+            <p>Discover amazing deals and promotions tailored just for you</p>
+        </div>
+
+        <!-- Offers Categories -->
+        <div class="offers-categories" id="categoriesView">
+            <div class="category-card" onclick="showOffers('credit-debit')">
+                <div class="category-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <h3>Credit & Debit Card Offers</h3>
+                <p>Exclusive cashback, rewards, and benefits on our premium cards</p>
+            </div>
+
+            <div class="category-card" onclick="showOffers('account-opening')">
+                <div class="category-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h3>Account Opening Promotions</h3>
+                <p>Special bonuses and benefits for new account holders</p>
+            </div>
+
+            <div class="category-card" onclick="showOffers('loan-offers')">
+                <div class="category-icon">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <h3>Loan-Related Offers</h3>
+                <p>Attractive interest rates and processing fee waivers</p>
+            </div>
+
+            <div class="category-card" onclick="showOffers('savings-investment')">
+                <div class="category-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Savings & Investment Offers</h3>
+                <p>Higher returns and exclusive investment opportunities</p>
+            </div>
+        </div>
+
+        <!-- Offers Sections -->
+        <div id="offersContainer">
+            <!-- Content will be populated by JavaScript -->
+        </div>
+
+        <!-- Application Modal -->
+        <div class="application-modal" id="applicationModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">Apply for Offer</h3>
+                    <button class="close-modal" onclick="closeModal()">&times;</button>
+                </div>
+                <form id="offerApplicationForm">
+                    <div id="modalFormContent">
+                        <!-- Form content will be populated by JavaScript -->
+                    </div>
+                    <button type="submit" class="btn">Apply Now</button>
+                </form>
+                <div id="modalMessage"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Offers data
+        const offersData = {
+            'credit-debit': {
+                title: 'Credit & Debit Card Offers',
+                icon: 'fas fa-credit-card',
+                offers: [
+                    {
+                        title: 'Maze Gold Credit Card',
+                        badge: 'PREMIUM',
+                        icon: 'fas fa-star',
+                        description: 'Earn unlimited cashback and enjoy premium benefits with our flagship credit card.',
+                        features: [
+                            '5% cashback on dining and entertainment',
+                            '2% cashback on all other purchases',
+                            'No annual fee for first year',
+                            'Complimentary airport lounge access',
+                            'Travel insurance up to ₹10 lakhs'
+                        ],
+                        cta: 'Apply for Gold Card',
+                        type: 'credit_card',
+                        offer_code: 'GOLD2024'
+                    },
+                    {
+                        title: 'Platinum Debit Card Upgrade',
+                        badge: 'LIMITED TIME',
+                        icon: 'fas fa-gem',
+                        description: 'Upgrade to our Platinum Debit Card and enjoy enhanced benefits.',
+                        features: [
+                            'Higher daily transaction limits',
+                            'Free ATM withdrawals worldwide',
+                            'Priority customer service',
+                            'Exclusive merchant discounts',
+                            'Enhanced security features'
+                        ],
+                        cta: 'Upgrade to Platinum',
+                        type: 'debit_card',
+                        offer_code: 'PLAT2024'
+                    },
+                    {
+                        title: 'Student Credit Card',
+                        badge: 'SPECIAL',
+                        icon: 'fas fa-graduation-cap',
+                        description: 'Perfect credit card for students with no income requirements.',
+                        features: [
+                            'No annual fee for students',
+                            '1% cashback on all purchases',
+                            'Build credit history early',
+                            'Online shopping protection',
+                            'Educational expense rewards'
+                        ],
+                        cta: 'Apply Student Card',
+                        type: 'credit_card',
+                        offer_code: 'STUDENT2024'
+                    }
+                ]
+            },
+            'account-opening': {
+                title: 'Account Opening Promotions',
+                icon: 'fas fa-user-plus',
+                offers: [
+                    {
+                        title: 'Zero Balance Savings Account',
+                        badge: 'NEW CUSTOMER',
+                        icon: 'fas fa-piggy-bank',
+                        description: 'Open a savings account with zero minimum balance requirement.',
+                        features: [
+                            'No minimum balance required',
+                            'Free debit card for life',
+                            'Mobile and internet banking',
+                            'Unlimited free transactions',
+                            '₹500 welcome bonus on opening'
+                        ],
+                        cta: 'Open Account',
+                        type: 'savings_account',
+                        offer_code: 'ZERO2024'
+                    },
+                    {
+                        title: 'Premium Salary Account',
+                        badge: 'SALARIED',
+                        icon: 'fas fa-briefcase',
+                        description: 'Exclusive benefits for salaried professionals.',
+                        features: [
+                            'Zero balance with salary credit',
+                            'Free personal accident insurance',
+                            'Preferential loan rates',
+                            'Priority banking services',
+                            'Complimentary credit card'
+                        ],
+                        cta: 'Open Salary Account',
+                        type: 'salary_account',
+                        offer_code: 'SALARY2024'
+                    },
+                    {
+                        title: 'Senior Citizen Special Account',
+                        badge: 'SENIOR CITIZEN',
+                        icon: 'fas fa-user-shield',
+                        description: 'Special banking benefits for senior citizens.',
+                        features: [
+                            'Higher interest rates on deposits',
+                            'Free medical insurance',
+                            'Doorstep banking services',
+                            'No charges on any transactions',
+                            'Dedicated relationship manager'
+                        ],
+                        cta: 'Open Senior Account',
+                        type: 'senior_account',
+                        offer_code: 'SENIOR2024'
+                    }
+                ]
+            },
+            'loan-offers': {
+                title: 'Loan-Related Offers',
+                icon: 'fas fa-hand-holding-usd',
+                offers: [
+                    {
+                        title: 'Home Loan Festival',
+                        badge: 'LOWEST RATES',
+                        icon: 'fas fa-home',
+                        description: 'Get your dream home with our special home loan rates.',
+                        features: [
+                            'Interest rates starting from 8.25%',
+                            'Zero processing fee',
+                            'Loan up to ₹5 crores',
+                            'Quick approval in 48 hours',
+                            'Free property valuation'
+                        ],
+                        cta: 'Apply Home Loan',
+                        type: 'home_loan',
+                        offer_code: 'HOME2024'
+                    },
+                    {
+                        title: 'Personal Loan Express',
+                        badge: 'INSTANT APPROVAL',
+                        icon: 'fas fa-bolt',
+                        description: 'Get instant personal loans with minimal documentation.',
+                        features: [
+                            'Approval in 30 minutes',
+                            'No collateral required',
+                            'Competitive interest rates',
+                            'Flexible repayment options',
+                            'Digital application process'
+                        ],
+                        cta: 'Apply Personal Loan',
+                        type: 'personal_loan',
+                        offer_code: 'PERSONAL2024'
+                    },
+                    {
+                        title: 'Car Loan Bonanza',
+                        badge: 'SPECIAL RATES',
+                        icon: 'fas fa-car',
+                        description: 'Drive your dream car with attractive financing options.',
+                        features: [
+                            'Interest rates from 9.5%',
+                            'Loan up to 90% of car value',
+                            'Flexible tenure up to 7 years',
+                            'Free car insurance',
+                            'Quick disbursement'
+                        ],
+                        cta: 'Apply Car Loan',
+                        type: 'car_loan',
+                        offer_code: 'CAR2024'
+                    }
+                ]
+            },
+            'savings-investment': {
+                title: 'Savings & Investment Offers',
+                icon: 'fas fa-chart-line',
+                offers: [
+                    {
+                        title: 'High Yield Fixed Deposit',
+                        badge: 'BEST RATES',
+                        icon: 'fas fa-percentage',
+                        description: 'Earn higher returns with our special fixed deposit rates.',
+                        features: [
+                            'Interest rates up to 7.5% p.a.',
+                            'Flexible tenure options',
+                            'Auto-renewal facility',
+                            'Loan against FD available',
+                            'Senior citizen additional benefits'
+                        ],
+                        cta: 'Invest in FD',
+                        type: 'fixed_deposit',
+                        offer_code: 'FD2024'
+                    },
+                    {
+                        title: 'Mutual Fund Investment',
+                        badge: 'ZERO COMMISSION',
+                        icon: 'fas fa-chart-pie',
+                        description: 'Start your investment journey with zero commission mutual funds.',
+                        features: [
+                            'Zero commission on all funds',
+                            'SIP starting from ₹500',
+                            'Expert advisory services',
+                            'Tax saving options available',
+                            'Easy online investment'
+                        ],
+                        cta: 'Start Investing',
+                        type: 'mutual_fund',
+                        offer_code: 'MF2024'
+                    },
+                    {
+                        title: 'Recurring Deposit Plus',
+                        badge: 'ENHANCED',
+                        icon: 'fas fa-coins',
+                        description: 'Build your savings systematically with enhanced RD benefits.',
+                        features: [
+                            'Higher interest rates',
+                            'Flexible monthly deposits',
+                            'Auto-debit facility',
+                            'Premature withdrawal allowed',
+                            'Insurance coverage included'
+                        ],
+                        cta: 'Start RD',
+                        type: 'recurring_deposit',
+                        offer_code: 'RD2024'
+                    }
+                ]
+            }
+        };
+
+        let currentOffer = null;
+
+        function showOffers(category) {
+            const categoriesView = document.getElementById('categoriesView');
+            const offersContainer = document.getElementById('offersContainer');
+
+            categoriesView.style.display = 'none';
+
+            const categoryData = offersData[category];
+
+            offersContainer.innerHTML = `
+                <div class="offers-section active">
+                    <button class="back-btn" onclick="showCategories()">
+                        <i class="fas fa-arrow-left"></i> Back to Categories
+                    </button>
+
+                    <div class="section-header">
+                        <i class="${categoryData.icon} section-icon"></i>
+                        <h2>${categoryData.title}</h2>
+                    </div>
+
+                    <div class="offers-grid">
+                        ${categoryData.offers.map(offer => `
+                            <div class="offer-card">
+                                <div class="offer-header">
+                                    <i class="${offer.icon} offer-icon"></i>
+                                    <div class="offer-title">${offer.title}</div>
+                                    <div class="offer-badge">${offer.badge}</div>
+                                </div>
+                                <div class="offer-description">${offer.description}</div>
+                                <ul class="offer-features">
+                                    ${offer.features.map(feature => `<li>${feature}</li>`).join('')}
+                                </ul>
+                                <button class="offer-cta" onclick="applyForOffer('${offer.type}', '${offer.offer_code}', '${offer.title}')">
+                                    ${offer.cta}
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function showCategories() {
+            document.getElementById('categoriesView').style.display = 'grid';
+            document.getElementById('offersContainer').innerHTML = '';
+        }
+
+        function applyForOffer(offerType, offerCode, offerTitle) {
+            currentOffer = { type: offerType, code: offerCode, title: offerTitle };
+
+            const modal = document.getElementById('applicationModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalFormContent = document.getElementById('modalFormContent');
+
+            modalTitle.textContent = `Apply for ${offerTitle}`;
+
+            // Generate form based on offer type
+            let formHTML = `
+                <div class="form-group">
+                    <label for="accountNumber">Account Number *</label>
+                    <input type="text" id="accountNumber" name="accountNumber" required placeholder="Enter your account number">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                </div>
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" name="fullName" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number *</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" required placeholder="Enter your phone number">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email address">
+                </div>
+            `;
+
+            // Add specific fields based on offer type
+            if (offerType.includes('loan')) {
+                formHTML += `
+                    <div class="form-group">
+                        <label for="loanAmount">Loan Amount Required (₹) *</label>
+                        <input type="number" id="loanAmount" name="loanAmount" required min="50000" placeholder="Enter loan amount">
+                    </div>
+                    <div class="form-group">
+                        <label for="monthlyIncome">Monthly Income (₹) *</label>
+                        <input type="number" id="monthlyIncome" name="monthlyIncome" required min="15000" placeholder="Enter monthly income">
+                    </div>
+                `;
+            } else if (offerType.includes('card')) {
+                formHTML += `
+                    <div class="form-group">
+                        <label for="monthlyIncome">Monthly Income (₹) *</label>
+                        <input type="number" id="monthlyIncome" name="monthlyIncome" required min="15000" placeholder="Enter monthly income">
+                    </div>
+                    <div class="form-group">
+                        <label for="employmentType">Employment Type *</label>
+                        <select id="employmentType" name="employmentType" required>
+                            <option value="">Select employment type</option>
+                            <option value="salaried">Salaried</option>
+                            <option value="self_employed">Self Employed</option>
+                            <option value="business">Business Owner</option>
+                            <option value="student">Student</option>
+                        </select>
+                    </div>
+                `;
+            } else if (offerType.includes('deposit') || offerType.includes('fund')) {
+                formHTML += `
+                    <div class="form-group">
+                        <label for="investmentAmount">Investment Amount (₹) *</label>
+                        <input type="number" id="investmentAmount" name="investmentAmount" required min="1000" placeholder="Enter investment amount">
+                    </div>
+                    <div class="form-group">
+                        <label for="investmentTenure">Investment Tenure *</label>
+                        <select id="investmentTenure" name="investmentTenure" required>
+                            <option value="">Select tenure</option>
+                            <option value="1">1 Year</option>
+                            <option value="2">2 Years</option>
+                            <option value="3">3 Years</option>
+                            <option value="5">5 Years</option>
+                            <option value="10">10 Years</option>
+                        </select>
+                    </div>
+                `;
+            }
+
+            modalFormContent.innerHTML = formHTML;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('applicationModal').style.display = 'none';
+            document.getElementById('modalMessage').innerHTML = '';
+        }
+
+        // Form submission handler
+        document.getElementById('offerApplicationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            data.offerType = currentOffer.type;
+            data.offerCode = currentOffer.code;
+            data.offerTitle = currentOffer.title;
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+
+            try {
+                const response = await fetch('/api/apply_offer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                const messageContainer = document.getElementById('modalMessage');
+
+                if (result.status === 'success') {
+                    messageContainer.innerHTML = `
+                        <div class="success-message">
+                            ${result.message}
+                            ${result.application_id ? `<br><strong>Application ID:</strong> ${result.application_id}` : ''}
+                        </div>
+                    `;
+                    this.reset();
+                } else {
+                    messageContainer.innerHTML = `
+                        <div class="error-message">
+                            ${result.message || 'Error processing application'}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('modalMessage').innerHTML = `
+                    <div class="error-message">
+                        Network error. Please try again.
+                    </div>
+                `;
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('applicationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

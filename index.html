@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance Website</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+<div class="background"></div>
+
+<!-- Navbar -->
+<nav id="navbar">
+  <div class="logo">Maze Bank</div>
+  <ul class="nav-links">
+      <li><a href="{{ url_for('home') }}">Home</a></li>
+      <li><a href="{{ url_for('save_page') }}">Save</a></li>
+      <li><a href="{{ url_for('pay_page') }}">Pay</a></li>
+      <li><a href="{{ url_for('invest_page') }}">Invest</a></li>
+      <li><a href="{{ url_for('borrow_page') }}">Borrow</a></li>
+      <li><a href="{{ url_for('insure_page') }}">Insure</a></li>
+      <li><a href="{{ url_for('offers_page') }}">Offers</a></li>
+  </ul>
+</nav>
+
+
+<section class="hero-section">
+  <video autoplay muted loop playsinline class="hero-video">
+    <source src="{{ url_for('static', filename='images/18069232-uhd_3840_2160_24fps.mp4') }}" type="video/mp4">
+      Your browser does not support the video tag.
+  </video>
+  <div class="hero-overlay">
+      <h1>Welcome to The Maze Bank</h1>
+      <p>Bank smarter. Live better.</p>
+  </div>
+</section>
+<main class="main-container">
+
+
+
+  <!-- Quick Actions -->
+  <div class="white-box">
+    <h2 class="section-title">Quick Actions</h2>
+    <div class="scroll-container quick-actions">
+      <div class="action-card" onclick="window.location.href='{{ url_for('pay_page') }}'">
+        <div class="action-icon">
+          <i class="fas fa-credit-card"></i>
+        </div>
+        <p>Pay to Customer</p>
+      </div>
+      <div class="action-card" onclick="window.location.href='/mini-statement'">
+        <div class="action-icon">
+          <i class="fas fa-file-alt"></i>
+        </div>
+        <p>Bank Mini Statements</p>
+      </div>
+      <div class="action-card" onclick="window.location.href='/transaction-history'">
+        <div class="action-icon">
+          <i class="fas fa-history"></i>
+        </div>
+        <p>Transaction History</p>
+      </div>
+      <div class="action-card" onclick="showBalanceModal()">
+        <div class="action-icon">
+          <i class="fas fa-wallet"></i>
+        </div>
+        <p>Bank Balance</p>
+      </div>
+      <div class="action-card" onclick="window.location.href='{{ url_for('pay_page') }}'">
+        <div class="action-icon">
+          <i class="fas fa-exchange-alt"></i>
+        </div>
+        <p>Account Transfer</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two Columns -->
+  <div class="two-columns">
+    <!-- Latest Offers -->
+    <div class="column scroll-wrapper">
+      <h2 class="section-title">Latest Offers</h2>
+      <button class="scroll-btn left">&#8249;</button>
+      <div class="scroll-container">
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-hand-holding-usd"></i>
+          </div>
+          <p>Personal Loan Offers</p>
+        </div>
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-building"></i>
+          </div>
+          <p>Maze Bank Sky</p>
+        </div>
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-home"></i>
+          </div>
+          <p>Home Loan</p>
+        </div>
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <p>Specle'v Active Account</p>
+        </div>
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-laptop"></i>
+          </div>
+          <p>Netbanking</p>
+        </div>
+      </div>
+      <button class="scroll-btn right">&#8250;</button>
+    </div>
+
+    <!-- Ways to Bank -->
+    <div class="column scroll-wrapper">
+      <h2 class="section-title">Ways to Bank</h2>
+      <button class="scroll-btn left">&#8249;</button>
+      <div class="scroll-container">
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fab fa-whatsapp"></i>
+          </div>
+          <p>Whatsapp Banking</p>
+        </div>
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <p>PayZapp</p>
+        </div>
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <p>Mobile Banking</p>
+        </div>
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-credit-card"></i>
+          </div>
+          <p>Maze Bank Cards</p>
+        </div>
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-briefcase"></i>
+          </div>
+          <p>SME Digital</p>
+        </div>
+      </div>
+      <button class="scroll-btn right">&#8250;</button>
+    </div>
+  </div>
+
+     <!-- Credit Card Promo -->
+<div class="white-box credit-card-section">
+  
+  <!-- Background Video -->
+  <video autoplay muted loop playsinline class="bg-video">
+    <source src="{{ url_for('static', filename='images/6282374-hd_1920_1080_30fps.mp4') }}" type="video/mp4">
+  </video>
+
+  <!-- Overlay Content -->
+  <div class="overlay">
+    <h2 class="section-title">Premium Users Credit Cards</h2>
+    <div class="scroll-container card-list">
+      <div class="credit-card gold fade-in">
+        <img src="https://source.unsplash.com/200x120/?gold-card" alt="">
+        <h3>Gold Card</h3>
+        <p>Low annual fee, rewards points, cashback on dining & shopping.</p>
+      </div>
+      <div class="credit-card platinum fade-in">
+        <img src="https://source.unsplash.com/200x120/?platinum-card" alt="">
+        <h3>Platinum Card</h3>
+        <p>Higher rewards rate, free airport lounge access, travel insurance.</p>
+      </div>
+      <div class="credit-card diamond fade-in">
+        <img src="https://source.unsplash.com/200x120/?diamond-card" alt="">
+        <h3>Diamond Card</h3>
+        <p>Premium benefits, concierge service, high credit limit.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+      <!-- Additional Services -->
+      <section class="section-card">
+          <h2 class="section-title">Additional Services</h2>
+          <div class="amenities-grid">
+              <div class="amenity-card"><img src="{{ url_for('static', filename='images/pexels-cottonbro-3943714.jpg') }}"><p>Investment Plans</p></div>
+              <div class="amenity-card"><img src="{{ url_for('static', filename='images/pexels-pixabay-164501.jpg') }}"><p>Credit Score Checker</p></div>
+              <div class="amenity-card"><img src="{{ url_for('static', filename='images/pexels-olly-3760067.jpg') }}"><p>Insurance Services</p></div>
+              <div class="amenity-card"><img src="{{ url_for('static', filename='images/pexels-pixabay-534216.jpg') }}"><p>Forex Exchange</p></div>
+          </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer-card">
+          <p>© 2025 Maze Bank. All rights reserved.</p>
+      </footer>
+
+  </main>
+
+<!-- Balance Check Modal -->
+<div id="balanceModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Check Bank Balance</h3>
+      <span class="close" onclick="closeBalanceModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <form id="balanceForm">
+        <div class="input-group">
+          <label for="accountNumber">Account Number:</label>
+          <input type="text" id="accountNumber" placeholder="Enter your account number" required>
+        </div>
+        <div class="input-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Check Balance</button>
+      </form>
+      <div id="balanceResult" style="display: none;">
+        <h4>Account Details</h4>
+        <p><strong>Name:</strong> <span id="accountName"></span></p>
+        <p><strong>Balance:</strong> ₹<span id="accountBalance"></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

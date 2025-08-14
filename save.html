@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>The Maze Bank Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/save.css') }}">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<header class="navbar" id="navbar">
+    <div class="logo">Maze Bank</div>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Save</a>
+        <a href="#">Pay</a>
+        <a href="#">Invest</a>
+        <a href="#">Borrow</a>
+        <a href="#">Insure</a>
+        <a href="#">Offers</a>
+    </nav>
+</header>
+
+<!-- Hero Section with Video -->
+<section class="hero">
+    <video autoplay muted loop playsinline class="hero-video">
+        <source src="{{ url_for('static', filename='images/Money_savings.mp4') }}" type="video/mp4">
+    </video>
+    <div class="hero-overlay">
+        <h1 class="hero-title">Welcome to <span>The Maze Bank</span></h1>
+        <p class="hero-subtitle">Bank smarter. Live better.</p>
+    </div>
+</section>
+
+<!-- Login Section -->
+<section class="form-section">
+    <div class="container glass" id="loginContainer">
+        <h2>Login to View Savings</h2>
+        <form id="loginForm">
+            <input type="text" name="holder_name" placeholder="Account Holder Name" required>
+            <input type="text" name="account_number" placeholder="Account Number" required>
+            <input type="text" name="ifsc" placeholder="IFSC Code" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <div class="output" id="loginOutput"></div>
+        <div class="toggle-create">
+            <p>Don't have an account?</p>
+            <button id="showCreateBtn">Create One</button>
+        </div>
+    </div>
+
+    <div class="container glass hidden" id="createContainer">
+        <h2>Create Account</h2>
+        <form id="createForm">
+            <input type="text" name="name" placeholder="Full Name" required>
+            <input type="number" name="initial_deposit" placeholder="Initial Deposit Amount" required>
+            <button type="submit">Create Account</button>
+        </form>
+        <div class="output" id="createOutput"></div>
+    </div>
+</section>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+<div class="container glass">
+    <h2>Plan Your Savings</h2>
+    <input type="number" id="goalAmount" placeholder="Target Amount" required>
+    <input type="number" id="interestRate" placeholder="Interest Rate (%)" required>
+    <input type="number" id="months" placeholder="Months to Save" required>
+    <button onclick="calculateSavings()">Calculate</button>
+    <div id="savingsOutput"></div>
+</div>
+
+<script>
+function calculateSavings() {
+    let goal = parseFloat(document.getElementById('goalAmount').value);
+    let rate = parseFloat(document.getElementById('interestRate').value) / 100 / 12;
+    let months = parseInt(document.getElementById('months').value);
+    
+    let monthly = goal / months;
+    if(rate > 0){
+        monthly = goal * rate / (1 - Math.pow(1 + rate, -months));
+    }
+    
+    document.getElementById('savingsOutput').innerHTML = 
+        `<p>You need to save <strong>$${monthly.toFixed(2)}</strong> per month.</p>`;
+}
+</script>
+<div class="wave-background"></div>
+
+<script src="{{ url_for('static', filename='js/save.js') }}"></script>
+
+
+</body>
+</html>
